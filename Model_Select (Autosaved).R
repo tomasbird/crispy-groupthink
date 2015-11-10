@@ -7,16 +7,16 @@
 ## combinations of data within a dataset.  
 ## For now it only does linear models
 
-Model_Select=function(dat, frac=0.8, iter=10, covs, resp, maxcov){
+Model_Select=function(dat, frac=0.8, it, covs, resp,mincov=1, maxcov){
 #initialize empty lists
 AICs=pr2=r2=npar=iter=dev=numeric()
 block=var=mods=typ=character()
 
-for(i in 1:iter){  # replicate 
+for(i in 1:it){  # replicate 
   subind=sample(1:nrow(dat), nrow(dat)*frac)
   subdat=dat[subind,]
   preddat=dat[-subind,]
-  for(n in 1:maxcov){
+  for(n in mincov:maxcov){
 	combs=combn(covs, n)
       for(n in 1:ncol(combs)){
       mod=paste(combs[,n], collapse="+")
@@ -53,6 +53,6 @@ return(op)
 ### example dataset
 data(mtcars)
 
-cars_select=Model_Select(dat=mtcars, covs=colnames(mtcars)[-1], resp=colnames(mtcars)[1], frac=0.8, iter=10)
+cars_select=Model_Select(dat=mtcars, covs=colnames(mtcars)[-1], resp=colnames(mtcars)[1], frac=0.8, it=10, maxcov=5)
 
 
